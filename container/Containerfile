@@ -1,0 +1,9 @@
+FROM docker.io/alpine:latest
+
+ARG TARGETARCH
+
+RUN apk add --no-cache ca-certificates git git-lfs openssh
+
+COPY container/${TARGETARCH}/release/gitmirror /usr/local/bin/gitmirror
+
+ENTRYPOINT ["/usr/local/bin/gitmirror"]
