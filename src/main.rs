@@ -73,11 +73,21 @@ struct Args {
     /// fetch LFS objects
     #[argh(switch)]
     lfs: bool,
+    /// full_name of a repo to exclude.
+    ///
+    /// Can be useful for DMCA'd repositories.
+    #[argh(option, long = "exclude", arg_name = "NAME")]
+    excludes: Vec<String>,
 }
 
 async fn process_repos(args: &Args, repos: &[octocrab::models::Repository]) -> anyhow::Result<()> {
     for repo in repos {
         let full_name = repo.full_name.as_ref().context("missing full_name")?;
+        if args.excludes.contains(full_name) {
+            log::info!("skip repo `{}`", full_name);
+            return Ok(());
+        }
+
         log::info!("process repo `{}`", full_name);
 
         let url = repo.clone_url.as_ref().context("missing clone_url")?;
