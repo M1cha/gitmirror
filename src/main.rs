@@ -85,7 +85,7 @@ async fn process_repos(args: &Args, repos: &[octocrab::models::Repository]) -> a
         let full_name = repo.full_name.as_ref().context("missing full_name")?;
         if args.excludes.contains(full_name) {
             log::info!("skip repo `{}`", full_name);
-            return Ok(());
+            continue;
         }
 
         log::info!("process repo `{}`", full_name);
