@@ -30,7 +30,7 @@ async fn list_user_repos(
     octocrab: &mut octocrab::Octocrab,
     name: &str,
 ) -> Result<octocrab::Page<octocrab::models::Repository>, octocrab::Error> {
-    let url = format!("users/{}/repos", name);
+    let url = format!("/users/{}/repos", name);
     let params = ListUserReposParameters {
         sort: Some(octocrab::params::repos::Sort::FullName),
         direction: Some(octocrab::params::Direction::Ascending),
