@@ -92,21 +92,22 @@ async fn process_repos(args: &Args, repos: &[octocrab::models::Repository]) -> a
 
         let url = repo.clone_url.as_ref().context("missing clone_url")?;
         let destination = args.destination.join(full_name);
+        let destination_str = destination.display();
 
         if destination.exists() {
-            run_cmd!(git -C "$destination" remote update --prune)?;
+            run_cmd!(git -C "$destination_str" remote update --prune)?;
         } else {
             let parent_dir = destination
                 .parent()
                 .context("failed to get parent directory")?;
             std::fs::create_dir_all(parent_dir).context("failed to create parent directory")?;
 
-            run_cmd!(git clone --mirror "$url" "$destination")?;
+            run_cmd!(git clone --mirror "$url" "$destination_str")?;
         }
 
         if args.lfs {
             log::info!("fetch LFS from `{}`", full_name);
-            run_cmd!(git -C "$destination" lfs fetch --all)?;
+            run_cmd!(git -C "$destination_str" lfs fetch --all)?;
         }
     }
     Ok(())
